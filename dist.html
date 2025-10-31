@@ -172,399 +172,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </canvas>
         <canvas id="display" width="2000" height="1200" style="border:0px solid #ff33cc;">
         </canvas>
-        <script>
-
-
-            var targetX = 0;
-            var targetY = 0;
-            document.getElementById("startAt").value = '1';
-            document.getElementById("xStart").value = '1';
-            document.getElementById("yStart").value = '1';
-            document.getElementById("code").value = 'SKU/Code';
-            document.getElementById("bcxp").value = 'x';
-            document.getElementById("bcyp").value = 'y';
-            document.getElementById("r1xp").value = 'x';
-            document.getElementById("r1yp").value = 'y';
-            document.getElementById("row1").value = 'First Row Text';
-            document.getElementById("row2").value = 'Second Row Text';
-            document.getElementById("fontSize").value = 'FNT';
-            document.getElementById("font").value = 'monospace';
-            document.getElementById('codeWidth').value = 'WDTH';
-
-            document.getElementById('codeHeight').value = 'HGHT';
-
-
-
-
-
-
-
-
-
-
-            var setInputData = function (x, y) {
-                targetX = x;
-                targetY = y;
-            };
-
-            const canvas = document.getElementById("display");
-            const ctx = canvas.getContext("2d");
-
-            var cell = createBarcodeCell(0, 0, "12345678", "this is a test", "$55");
-
-
-            document.getElementById("code").addEventListener('keyup', function () {
-
-                changeValues();
-            });
-
-            document.getElementById("row1").addEventListener('keyup', function () {
-
-                changeValues();
-            });
-
-            document.getElementById("row2").addEventListener('keyup', function () {
-
-                changeValues();
-            });
-
-
-            document.getElementById("r1xp").addEventListener('keyup', function () {
-
-                changeValues();
-            });
-
-            document.getElementById("r1yp").addEventListener('keyup', function () {
-
-                changeValues();
-            });
-
-
-            document.getElementById("r2xp").addEventListener('keyup', function () {
-
-                changeValues();
-            });
-
-            document.getElementById("r2yp").addEventListener('keyup', function () {
-
-                changeValues();
-            });
-
-            document.getElementById("display").addEventListener('keyup', function () {
-
-                alert('hello');
-            });
-
-
-
-
-            canvas.addEventListener('keydown', function (event) {
-
-                alert('hello');
-            });
-
-            var drawer = createBarcodeDrawer("barcode", "display");
-            canvas.addEventListener('click', function (event) {
-                drawer.clearSelectedCell();
-                var x = event.pageX;
-                var y = event.pageY - 245;
-                var cell = drawer.getClickCell(x, y);
-                if (cell !== null || cell != undefined) {
-                    document.getElementById("code").value = cell.getCode();
-                    targetX = cell.getX();
-                    targetY = cell.getY();
-                }
-                setInput();
-                redraw();
-            }, false);
-
-            var getTargetCell = function () {
-                return drawer.getCell(targetX, targetY);
-
-            };
-
-            //   https://stackoverflow.com/questions/12809971/quick-print-html5-canvas
-            function printCanvas()
-            {
-                if (printCheck() === false) {
-                    return;
-                }
-
-                MARES_CODE = false;
-
-
-                if (isFirefox !== true) {
-
-                    printDraw();
-                    var dataUrl = document.getElementById('display').toDataURL(); //attempt to save base64 string to server using this var
-
-                    var win = window.open('');
-                    var url = dataUrl;
-                    win.document.write('<img height = 1802 src="' + url + '" onload="window.print();window.close()" />');
-                    win.focus();
-
-
-
-                    return;
-                }
-
-
-
-                printDraw();
-                var dataUrl = document.getElementById('display').toDataURL(); //attempt to save base64 string to server using this var
-
-
-
-
-
-
-
-
-                var windowContent = '<!DOCTYPE html>';
-                windowContent += '<html>'
-                windowContent += '<head><title>Print canvas</title></head>';
-                windowContent += '<body>'
-                windowContent += '<img src="' + dataUrl + '">';
-                windowContent += '</body>';
-                windowContent += '</html>';
-                var printWin = window.open('', '', 'width=340,height=260');
-                printWin.document.open();
-                printWin.document.write(windowContent);
-                printWin.document.close();
-                printWin.focus();
-                printWin.print();
-                printWin.close();
-            }
-
-
-
-
-            var changeValues = function () {
-                var code = document.getElementById("code").value;
-                var bcxp = document.getElementById("bcxp").value;
-
-                var codeWidth = document.getElementById("codeWidth").value;
-                var codeHeight = document.getElementById("codeHeight").value;
-                var codeTextSize = document.getElementById("codeTextSize").value;
-
-                var r1xp = document.getElementById("r1xp").value * 1.0;
-                var r1yp = document.getElementById("r1yp").value * 1.0;
-                var row1 = document.getElementById("row1").value;
-
-                var r2xp = document.getElementById("r2xp").value * 1.0;
-
-                var r2yp = document.getElementById("r2yp").value * 1.0;
-                var row2 = document.getElementById("row2").value;
-
-                var fontSize = document.getElementById("fontSize").value;
-                var font = document.getElementById("font").value;
-
-
-
-
-                var target = getTargetCell();
-                if (target !== null || target !== undefiend) {
-                    target.setCode(code);
-                    target.setFontFamily(font);
-                    target.getPaddings().x.barcode = bcxp;
-
-                    target.getPaddings().x.row1 = r1xp;
-                    target.getPaddings().y.row1 = r1yp;
-                    target.setRow1(row1);
-
-                    target.getPaddings().x.row2 = r2xp;
-                    target.getPaddings().y.row2 = r2yp;
-                    target.setRow2(row2);
-
-                    target.setTextSize(fontSize);
-
-                    target.setCodeWidth(codeWidth);
-                    target.setCodeHeight(codeHeight);
-                    target.setCodeTextSize(codeTextSize);
-
-                    redraw();
-                }
-            };
-
-
-
-
-
-            for (var x = 0; x < 3; x++) {
-                for (var y = 0; y < 10; y++) {
-                    drawer.setCell(x, y, " ", "", "");
-                }
-            }
-
-            document.getElementById("display").getContext("2d").translate(0.5, 0.5);
-            document.getElementById("barcode").getContext("2d").translate(0.5, 0.5);
-
-
-            setInput = function () {
-                var cell = drawer.getCell(targetX, targetY);
-                document.getElementById("code").value = cell.getCode();
-                document.getElementById("bcxp").value = cell.getPaddings().x.barcode;
-                document.getElementById("bcyp").value = cell.getPaddings().y.barcode;
-                document.getElementById("r1xp").value = cell.getPaddings().x.row1;
-                document.getElementById("r1yp").value = cell.getPaddings().y.row1;
-                document.getElementById("r2xp").value = cell.getPaddings().x.row2;
-                document.getElementById("r2yp").value = cell.getPaddings().y.row2;
-                document.getElementById("row1").value = cell.getRow1();
-                document.getElementById("row2").value = cell.getRow2();
-                document.getElementById("fontSize").value = cell.getFontSize();
-                document.getElementById("codeWidth").value = cell.getCodeWidth();
-                document.getElementById("codeHeight").value = cell.getCodeHeight();
-                document.getElementById("codeTextSize").value = cell.getCodeTextSize();
-            };
-
-
-            var redraw = function () {
-                var e = document.getElementById("format");
-                var format = e.value;
-                drawer.drawCells(format);
-
-            };
-
-            var printDraw = function () {
-                var e = document.getElementById("format");
-                var format = e.value;
-                drawer.clearSelectedCell();
-                drawer.drawCells(format, false);
-
-            };
-
-
-
-            var download = function () {
-                var link = document.createElement('a');
-                link.download = 'filename.jpeg';
-                link.href = document.getElementById('display').toDataURL("image/jpeg");
-                link.click();
-            };
-
-
-            var uploadFile = function () {
-
-                let file = document.getElementById("fileUpload").files[0];
-
-                var reader = new FileReader();
-                reader.readAsText(file, "UTF-8");
-                reader.onload = function (evt) {
-                    var data = parseText(evt.target.result);
-                    setData(data);
-                };
-            };
-
-
-            var parseText = function (input) {
-                var startAt = parseInt(document.getElementById("startAt").value);
-
-                var lines = [];
-                var index = input.indexOf("\n");
-                while (index > 0) {
-                    var entry = input.substring(0, index);
-                    input = input.substring(index + 1);
-                    index = input.indexOf("\n");
-                    startAt--;
-                    if (startAt < 0) {
-                        lines.push(parseLine(entry));
-                    }
-                }
-
-                if (input.length > 0) {
-                    lines.push(parseLine(input));
-                }
-                return lines;
-            };
-
-            var parseLine = function (input) {
-                var lines = [];
-                var index = input.indexOf(",");
-                while (index >= 0) {
-                    var entry = input.substring(0, index);
-                    input = input.substring(index + 1);
-                    index = input.indexOf(",");
-                    lines.push(entry);
-                }
-
-                if (input.length > 0) {
-                    lines.push(input);
-                }
-                return lines;
-            };
-
-            var setData = function (data) {
-                drawer.clearCells();
-                var x = parseInt(document.getElementById("xStart").value);
-                ;
-                var y = 0;
-
-                y = parseInt(document.getElementById("yStart").value);
-
-                x--;
-                y--;
-                for (var line = 0; line < data.length; line++) {
-
-
-                    var entry = data[line];
-                    var cell = drawer.getCell(x, y);
-                    if (cell !== null && cell !== undefined) {
-                        cell.setCode(entry[4]);
-                        cell.setRow1(entry[2]);
-
-                        var price = entry[11] + "";
-                        var index = price.indexOf(".");
-                        if (index >= 0) {
-                            var front = price.substring(0, index);
-                            var last = price.substring(index + 1);
-                            if (last.length > 2) {
-                                last = last.substring(0, 2);
-                            }
-
-                            price = '$' + front + '.' + last;
-                        }
-
-
-                        cell.setRow2(price);
-
-                        x++;
-                        if (x > 2) {
-                            x = 0;
-                            y++;
-                        }
-                    }
-
-                }
-
-
-
-                redraw();
-
-
-
-            };
-            redraw();
-
-            var displayHelp = function () {
-                var helpText = 'Welcome to the label maker! To use, click on a ' +
-                        'cell. To change values, enter text in the boxes' +
-                        ' . The boxes to the right of the text boxes is used to' +
-                        ' adjust vertical(Y) and horiztonal(X) position of the'
-                        + ' chosen value. To adjust the label text size, use the far' +
-                        ' right box. This will change both lines of text. Once you are done,' +
-                        ' press the print button to print. Remember to use the minimum margins setting' +
-                        ' and only print the first page! To upload a PO, download the csv from lightspeed. ' +
-                        ' Afterwards, select the file with the browse button. Next, select the uplaod button.' +
-                        ' Finally, if needed the top two boxes can be used to set which cells are skipped. ' +
-                        ' Use this option if you are using a partially used label sheet.';
-
-                alert(helpText);
-            };
-
-            var isFirefox = typeof InstallTrigger !== 'undefined';
-
-
-        </script>
+   
 		
 		
 		<script>
@@ -1060,7 +668,399 @@ var printCheck = function () {
     return true;
 };
 		</script>
-		
+		     <script>
+
+
+            var targetX = 0;
+            var targetY = 0;
+            document.getElementById("startAt").value = '1';
+            document.getElementById("xStart").value = '1';
+            document.getElementById("yStart").value = '1';
+            document.getElementById("code").value = 'SKU/Code';
+            document.getElementById("bcxp").value = 'x';
+            document.getElementById("bcyp").value = 'y';
+            document.getElementById("r1xp").value = 'x';
+            document.getElementById("r1yp").value = 'y';
+            document.getElementById("row1").value = 'First Row Text';
+            document.getElementById("row2").value = 'Second Row Text';
+            document.getElementById("fontSize").value = 'FNT';
+            document.getElementById("font").value = 'monospace';
+            document.getElementById('codeWidth').value = 'WDTH';
+
+            document.getElementById('codeHeight').value = 'HGHT';
+
+
+
+
+
+
+
+
+
+
+            var setInputData = function (x, y) {
+                targetX = x;
+                targetY = y;
+            };
+
+            const canvas = document.getElementById("display");
+            const ctx = canvas.getContext("2d");
+
+            var cell = createBarcodeCell(0, 0, "12345678", "this is a test", "$55");
+
+
+            document.getElementById("code").addEventListener('keyup', function () {
+
+                changeValues();
+            });
+
+            document.getElementById("row1").addEventListener('keyup', function () {
+
+                changeValues();
+            });
+
+            document.getElementById("row2").addEventListener('keyup', function () {
+
+                changeValues();
+            });
+
+
+            document.getElementById("r1xp").addEventListener('keyup', function () {
+
+                changeValues();
+            });
+
+            document.getElementById("r1yp").addEventListener('keyup', function () {
+
+                changeValues();
+            });
+
+
+            document.getElementById("r2xp").addEventListener('keyup', function () {
+
+                changeValues();
+            });
+
+            document.getElementById("r2yp").addEventListener('keyup', function () {
+
+                changeValues();
+            });
+
+            document.getElementById("display").addEventListener('keyup', function () {
+
+                alert('hello');
+            });
+
+
+
+
+            canvas.addEventListener('keydown', function (event) {
+
+                alert('hello');
+            });
+
+            var drawer = createBarcodeDrawer("barcode", "display");
+            canvas.addEventListener('click', function (event) {
+                drawer.clearSelectedCell();
+                var x = event.pageX;
+                var y = event.pageY - 245;
+                var cell = drawer.getClickCell(x, y);
+                if (cell !== null || cell != undefined) {
+                    document.getElementById("code").value = cell.getCode();
+                    targetX = cell.getX();
+                    targetY = cell.getY();
+                }
+                setInput();
+                redraw();
+            }, false);
+
+            var getTargetCell = function () {
+                return drawer.getCell(targetX, targetY);
+
+            };
+
+            //   https://stackoverflow.com/questions/12809971/quick-print-html5-canvas
+            function printCanvas()
+            {
+                if (printCheck() === false) {
+                    return;
+                }
+
+                MARES_CODE = false;
+
+
+                if (isFirefox !== true) {
+
+                    printDraw();
+                    var dataUrl = document.getElementById('display').toDataURL(); //attempt to save base64 string to server using this var
+
+                    var win = window.open('');
+                    var url = dataUrl;
+                    win.document.write('<img height = 1802 src="' + url + '" onload="window.print();window.close()" />');
+                    win.focus();
+
+
+
+                    return;
+                }
+
+
+
+                printDraw();
+                var dataUrl = document.getElementById('display').toDataURL(); //attempt to save base64 string to server using this var
+
+
+
+
+
+
+
+
+                var windowContent = '<!DOCTYPE html>';
+                windowContent += '<html>'
+                windowContent += '<head><title>Print canvas</title></head>';
+                windowContent += '<body>'
+                windowContent += '<img src="' + dataUrl + '">';
+                windowContent += '</body>';
+                windowContent += '</html>';
+                var printWin = window.open('', '', 'width=340,height=260');
+                printWin.document.open();
+                printWin.document.write(windowContent);
+                printWin.document.close();
+                printWin.focus();
+                printWin.print();
+                printWin.close();
+            }
+
+
+
+
+            var changeValues = function () {
+                var code = document.getElementById("code").value;
+                var bcxp = document.getElementById("bcxp").value;
+
+                var codeWidth = document.getElementById("codeWidth").value;
+                var codeHeight = document.getElementById("codeHeight").value;
+                var codeTextSize = document.getElementById("codeTextSize").value;
+
+                var r1xp = document.getElementById("r1xp").value * 1.0;
+                var r1yp = document.getElementById("r1yp").value * 1.0;
+                var row1 = document.getElementById("row1").value;
+
+                var r2xp = document.getElementById("r2xp").value * 1.0;
+
+                var r2yp = document.getElementById("r2yp").value * 1.0;
+                var row2 = document.getElementById("row2").value;
+
+                var fontSize = document.getElementById("fontSize").value;
+                var font = document.getElementById("font").value;
+
+
+
+
+                var target = getTargetCell();
+                if (target !== null || target !== undefiend) {
+                    target.setCode(code);
+                    target.setFontFamily(font);
+                    target.getPaddings().x.barcode = bcxp;
+
+                    target.getPaddings().x.row1 = r1xp;
+                    target.getPaddings().y.row1 = r1yp;
+                    target.setRow1(row1);
+
+                    target.getPaddings().x.row2 = r2xp;
+                    target.getPaddings().y.row2 = r2yp;
+                    target.setRow2(row2);
+
+                    target.setTextSize(fontSize);
+
+                    target.setCodeWidth(codeWidth);
+                    target.setCodeHeight(codeHeight);
+                    target.setCodeTextSize(codeTextSize);
+
+                    redraw();
+                }
+            };
+
+
+
+
+
+            for (var x = 0; x < 3; x++) {
+                for (var y = 0; y < 10; y++) {
+                    drawer.setCell(x, y, " ", "", "");
+                }
+            }
+
+            document.getElementById("display").getContext("2d").translate(0.5, 0.5);
+            document.getElementById("barcode").getContext("2d").translate(0.5, 0.5);
+
+
+            setInput = function () {
+                var cell = drawer.getCell(targetX, targetY);
+                document.getElementById("code").value = cell.getCode();
+                document.getElementById("bcxp").value = cell.getPaddings().x.barcode;
+                document.getElementById("bcyp").value = cell.getPaddings().y.barcode;
+                document.getElementById("r1xp").value = cell.getPaddings().x.row1;
+                document.getElementById("r1yp").value = cell.getPaddings().y.row1;
+                document.getElementById("r2xp").value = cell.getPaddings().x.row2;
+                document.getElementById("r2yp").value = cell.getPaddings().y.row2;
+                document.getElementById("row1").value = cell.getRow1();
+                document.getElementById("row2").value = cell.getRow2();
+                document.getElementById("fontSize").value = cell.getFontSize();
+                document.getElementById("codeWidth").value = cell.getCodeWidth();
+                document.getElementById("codeHeight").value = cell.getCodeHeight();
+                document.getElementById("codeTextSize").value = cell.getCodeTextSize();
+            };
+
+
+            var redraw = function () {
+                var e = document.getElementById("format");
+                var format = e.value;
+                drawer.drawCells(format);
+
+            };
+
+            var printDraw = function () {
+                var e = document.getElementById("format");
+                var format = e.value;
+                drawer.clearSelectedCell();
+                drawer.drawCells(format, false);
+
+            };
+
+
+
+            var download = function () {
+                var link = document.createElement('a');
+                link.download = 'filename.jpeg';
+                link.href = document.getElementById('display').toDataURL("image/jpeg");
+                link.click();
+            };
+
+
+            var uploadFile = function () {
+
+                let file = document.getElementById("fileUpload").files[0];
+
+                var reader = new FileReader();
+                reader.readAsText(file, "UTF-8");
+                reader.onload = function (evt) {
+                    var data = parseText(evt.target.result);
+                    setData(data);
+                };
+            };
+
+
+            var parseText = function (input) {
+                var startAt = parseInt(document.getElementById("startAt").value);
+
+                var lines = [];
+                var index = input.indexOf("\n");
+                while (index > 0) {
+                    var entry = input.substring(0, index);
+                    input = input.substring(index + 1);
+                    index = input.indexOf("\n");
+                    startAt--;
+                    if (startAt < 0) {
+                        lines.push(parseLine(entry));
+                    }
+                }
+
+                if (input.length > 0) {
+                    lines.push(parseLine(input));
+                }
+                return lines;
+            };
+
+            var parseLine = function (input) {
+                var lines = [];
+                var index = input.indexOf(",");
+                while (index >= 0) {
+                    var entry = input.substring(0, index);
+                    input = input.substring(index + 1);
+                    index = input.indexOf(",");
+                    lines.push(entry);
+                }
+
+                if (input.length > 0) {
+                    lines.push(input);
+                }
+                return lines;
+            };
+
+            var setData = function (data) {
+                drawer.clearCells();
+                var x = parseInt(document.getElementById("xStart").value);
+                ;
+                var y = 0;
+
+                y = parseInt(document.getElementById("yStart").value);
+
+                x--;
+                y--;
+                for (var line = 0; line < data.length; line++) {
+
+
+                    var entry = data[line];
+                    var cell = drawer.getCell(x, y);
+                    if (cell !== null && cell !== undefined) {
+                        cell.setCode(entry[4]);
+                        cell.setRow1(entry[2]);
+
+                        var price = entry[11] + "";
+                        var index = price.indexOf(".");
+                        if (index >= 0) {
+                            var front = price.substring(0, index);
+                            var last = price.substring(index + 1);
+                            if (last.length > 2) {
+                                last = last.substring(0, 2);
+                            }
+
+                            price = '$' + front + '.' + last;
+                        }
+
+
+                        cell.setRow2(price);
+
+                        x++;
+                        if (x > 2) {
+                            x = 0;
+                            y++;
+                        }
+                    }
+
+                }
+
+
+
+                redraw();
+
+
+
+            };
+            redraw();
+
+            var displayHelp = function () {
+                var helpText = 'Welcome to the label maker! To use, click on a ' +
+                        'cell. To change values, enter text in the boxes' +
+                        ' . The boxes to the right of the text boxes is used to' +
+                        ' adjust vertical(Y) and horiztonal(X) position of the'
+                        + ' chosen value. To adjust the label text size, use the far' +
+                        ' right box. This will change both lines of text. Once you are done,' +
+                        ' press the print button to print. Remember to use the minimum margins setting' +
+                        ' and only print the first page! To upload a PO, download the csv from lightspeed. ' +
+                        ' Afterwards, select the file with the browse button. Next, select the uplaod button.' +
+                        ' Finally, if needed the top two boxes can be used to set which cells are skipped. ' +
+                        ' Use this option if you are using a partially used label sheet.';
+
+                alert(helpText);
+            };
+
+            var isFirefox = typeof InstallTrigger !== 'undefined';
+
+
+        </script>
 		
 		
 		
